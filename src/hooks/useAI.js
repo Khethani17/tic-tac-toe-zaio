@@ -46,3 +46,5 @@ useEffect(() => {
   game.board,
   game.aiDifficulty,
 ]);
+
+export default useAI;
