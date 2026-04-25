@@ -1,6 +1,6 @@
 // src/components/GameCell/GameCell.styled.js
 
-import styled, { keyframes, css } from "styled-components"; // 👈 Added css
+import styled, { keyframes, css } from "styled-components";
 
 const popIn = keyframes`
   0% { transform: scale(0); opacity: 0; }
@@ -21,18 +21,26 @@ export const CellStyle = styled.button`
   background: ${({ theme }) => theme.surface};
   border: none;
   border-radius: ${({ theme }) => theme.borderRadius};
-  cursor: pointer;
+  cursor: ${({ $disabled }) => ($disabled ? "default" : "pointer")};
   transition: all 0.2s ease;
   padding: 18px;
   outline: none;
 
   &:hover {
-    background: ${({ theme }) => theme.surfaceHover};
-    transform: scale(1.03);
+    ${({ $disabled }) =>
+      !$disabled &&
+      css`
+        background: ${({ theme }) => theme.surfaceHover};
+        transform: scale(1.03);
+      `}
   }
 
   &:active {
-    transform: scale(0.97);
+    ${({ $disabled }) =>
+      !$disabled &&
+      css`
+        transform: scale(0.97);
+      `}
   }
 
   .markedItem {

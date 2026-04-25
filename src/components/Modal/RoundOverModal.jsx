@@ -14,17 +14,29 @@ function RoundOverModal() {
 
   const handlePlayAgain = () => {
     resetGame();
-    handleModal(); // closes the modal
+    handleModal();
+  };
+
+  // NEW: Dynamic labels based on game mode
+  const getWinnerText = () => {
+    if (game.gameMode === "pvc") {
+      return game.winner === "x" ? "You Win!" : "AI Wins!";
+    }
+    return "Wins!";
   };
 
   if (game.winner) {
     const winnerColor = game.winner === "x" ? "#e94560" : "#00d2ff";
     return (
       <>
-        <ModalTitle>Takes the round!</ModalTitle>
+        <ModalTitle>
+          {game.gameMode === "pvc" && game.winner === "o"
+            ? "Better luck next time!"
+            : "Takes the round!"}
+        </ModalTitle>
         <WinnerRow $color={winnerColor}>
           {game.winner === "x" ? <IconX /> : <IconO />}
-          <span>Wins!</span>
+          <span>{getWinnerText()}</span>
         </WinnerRow>
         <ModalActions>
           <Button onClick={handlePlayAgain} small>

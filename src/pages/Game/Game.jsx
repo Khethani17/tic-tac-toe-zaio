@@ -5,8 +5,7 @@ import GameCell from "../../components/GameCell/GameCell";
 import Player from "../../components/Player/Player";
 import Button from "../../components/Button/Button";
 import Modal from "../../components/Modal/Modal";
-// Keep this commented out until you fix the export inside GameModeSelector.jsx
-// import GameModeSelector from "../../components/GameModeSelector/GameModeSelector";
+import GameModeSelector from "../../components/GameModeSelector/GameModeSelector";
 import useAI from "../../hooks/useAI";
 import {
   GameWrapper,
@@ -19,7 +18,7 @@ function Game() {
   const { game, resetGame, undoMove } = useContext(GameContext);
   const { isAiThinking } = useAI();
 
-  // Optimized to show results clearly based on your Reducer state
+  // This function formats the result text for the UI
   const getStatusMessage = () => {
     if (game.roundComplete) {
       if (game.winner) {
@@ -34,7 +33,10 @@ function Game() {
 
   return (
     <GameWrapper>
-      {/* 1. Scoreboard Section */}
+      {/* 1. Game Mode & Difficulty Selectors */}
+      <GameModeSelector />
+
+      {/* 2. Scoreboard */}
       <ScoreSection>
         <Player
           label={game.gameMode === "pvc" ? "X (You)" : "X (P1)"}
@@ -56,7 +58,7 @@ function Game() {
         />
       </ScoreSection>
 
-      {/* 2. Dynamic Status Message (Results appear here) */}
+      {/* 3. Results / Status Area */}
       <h2
         style={{
           textAlign: "center",
@@ -68,20 +70,19 @@ function Game() {
         {isAiThinking ? "🤖 AI is thinking..." : getStatusMessage()}
       </h2>
 
-      {/* 3. The Grid */}
+      {/* 4. Game Board */}
       <BoardGrid>
         {game.board.map((cell, index) => (
           <GameCell
             key={index}
             cellItem={cell}
             index={index}
-            // Disable cells if AI is moving or round is over
             disabled={isAiThinking || game.roundComplete}
           />
         ))}
       </BoardGrid>
 
-      {/* 4. Controls */}
+      {/* 5. Footer Controls */}
       <ControlsRow>
         <Button onClick={resetGame} small>
           🔁 Restart

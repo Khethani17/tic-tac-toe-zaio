@@ -62,3 +62,15 @@ export const ThemeButton = styled.button`
     transform: rotate(20deg) scale(1.1);
   }
 `;
+
+export const AiThinkingText = styled.span`
+  font-size: 0.75rem;
+  color: ${({ theme }) => theme.textMuted};
+  margin-left: 8px;
+  animation: pulse 1s ease-in-out infinite;
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+  }
+`;
