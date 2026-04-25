@@ -1,6 +1,5 @@
 import React, { useContext } from "react";
 import { GameContext } from "../../contexts/GameContext";
-import { ModalContext } from "../../contexts/ModalContext";
 import { SfxContext } from "../../contexts/SfxContext";
 import { CellStyle } from "./GameCell.styled";
 
