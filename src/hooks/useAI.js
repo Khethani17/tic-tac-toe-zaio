@@ -1,94 +1,48 @@
-// src/hooks/useAI.js
+// eslint-disable-next-line react-hooks/exhaustive-deps
+useEffect(() => {
+  if (game.gameMode !== "pvc" || game.turn !== "o" || game.roundComplete) {
+    return;
+  }
 
-import { useContext, useEffect, useRef } from "react";
+  aiTimeoutRef.current = setTimeout(() => {
+    const moveIndex =
+      game.aiDifficulty === "hard"
+        ? getSmartComputerMove([...game.board], "o")
+        : getComputerMove(game.board);
 
-import { GameContext } from "../contexts/GameContext";
+    if (moveIndex === null) return;
 
-import { ModalContext } from "../contexts/ModalContext";
+    clickSfx();
+    updateBoard(moveIndex);
 
-import { SfxContext } from "../contexts/SfxContext";
+    const simulatedBoard = [...game.board];
+    simulatedBoard[moveIndex] = "o";
 
-import {
-  checkForWinner,
-  checkForDraw,
-  getComputerMove,
-  getSmartComputerMove,
-} from "../utils/GameUtils";
+    const result = checkForWinner(simulatedBoard);
 
-import RoundOverModal from "../components/Modal/RoundOverModal";
-
-const useAI = () => {
-  const { game, updateBoard, roundComplete } = useContext(GameContext);
-
-  const { handleModal } = useContext(ModalContext);
-
-  const { clickSfx, completedSfx } = useContext(SfxContext);
-
-  const aiTimeoutRef = useRef(null);
-
-  useEffect(() => {
-    if (game.gameMode !== "pvc" || game.turn !== "o" || game.roundComplete) {
+    if (result) {
+      completedSfx();
+      roundComplete("o", result);
+      handleModal(<RoundOverModal />);
       return;
     }
 
-    aiTimeoutRef.current = setTimeout(() => {
-      const moveIndex =
-        game.aiDifficulty === "hard"
-          ? getSmartComputerMove([...game.board], "o")
-          : getComputerMove(game.board);
+    if (checkForDraw(simulatedBoard)) {
+      completedSfx();
+      roundComplete(null);
+      handleModal(<RoundOverModal />);
+    }
+  }, 500);
 
-      if (moveIndex === null) return;
-
-      clickSfx();
-
-      updateBoard(moveIndex);
-
-      const simulatedBoard = [...game.board];
-
-      simulatedBoard[moveIndex] = "o";
-
-      const result = checkForWinner(simulatedBoard);
-
-      if (result) {
-        completedSfx();
-
-        roundComplete("o", result);
-
-        handleModal(<RoundOverModal />);
-
-        return;
-      }
-
-      if (checkForDraw(simulatedBoard)) {
-        completedSfx();
-
-        roundComplete(null);
-
-        handleModal(<RoundOverModal />);
-      }
-    }, 500);
-
-    return () => {
-      if (aiTimeoutRef.current) {
-        clearTimeout(aiTimeoutRef.current);
-      }
-    };
-  }, [
-    game.turn,
-
-    game.gameMode,
-
-    game.roundComplete,
-
-    game.board,
-
-    game.aiDifficulty,
-  ]);
-
-  const isAiThinking =
-    game.gameMode === "pvc" && game.turn === "o" && !game.roundComplete;
-
-  return { isAiThinking };
-};
-
-export default useAI;
+  return () => {
+    if (aiTimeoutRef.current) {
+      clearTimeout(aiTimeoutRef.current);
+    }
+  };
+}, [
+  game.turn,
+  game.gameMode,
+  game.roundComplete,
+  game.board,
+  game.aiDifficulty,
+]);

@@ -9,7 +9,7 @@ import { useCallback, useRef } from "react";
  * @returns {{ hoverSfx: Function, clickSfx: Function, completedSfx: Function }}
  */
 export const useSound = () => {
-  const audioRef = useRef(null);
+  
 
   const playSound = useCallback((frequency = 400, duration = 100) => {
     try {
