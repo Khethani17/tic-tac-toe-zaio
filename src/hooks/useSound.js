@@ -1,6 +1,6 @@
 // src/hooks/useSound.js
 
-import { useCallback, useRef } from "react";
+import { useCallback } from "react";
 
 /**
  * Custom hook for playing sound effects.
